@@ -1,0 +1,7 @@
+{
+    "css.format.newlineBetweenSelectors": true,
+    "editor.renderWhitespace": "selection",
+    "editor.insertSpaces": true,
+    "editor.codeActionWidget.showHeaders": true,
+    "editor.codeActionWidget.includeNearbyQuickFixes": false
+}
