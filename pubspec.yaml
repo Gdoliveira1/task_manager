@@ -1,0 +1,42 @@
+name: task_manager
+description: "TaskManager app for devices"
+
+publish_to: 'none'
+
+version: 0.1.0
+
+environment:
+  sdk: '>=3.3.0 <4.0.0'
+dependencies:
+  carousel_slider: ^4.2.1
+  cupertino_icons: ^1.0.6
+  equatable: ^2.0.5
+  flutter:
+    sdk: flutter
+  flutter_bloc: ^8.1.4
+  flutter_modular: ^6.3.2
+  json_annotation: ^4.8.1
+
+dev_dependencies:
+  build_runner: ^2.4.8
+  flutter_lints: ^3.0.0
+  flutter_test:
+    sdk: flutter
+  json_serializable: ^6.7.1
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/
+  fonts:
+    - family: Ubuntu
+      fonts:
+        - asset: assets/fonts/Ubuntu-Light.ttf
+          weight: 300
+        - asset: assets/fonts/Ubuntu-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Ubuntu-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Ubuntu-Bold.ttf
+          weight: 600
+  
