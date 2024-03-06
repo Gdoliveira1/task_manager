@@ -4,6 +4,7 @@ import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:flutter_modular/flutter_modular.dart"
     hide ModularWatchExtension;
+import "package:task_manager/src/domain/constants/app_colors.dart";
 
 import "package:task_manager/src/modules/auth/auth_module.dart";
 import "package:task_manager/src/modules/auth/bloc/auth_cubit.dart";
@@ -74,8 +75,8 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                             .forgotPassword(_emailController.text));
                       },
                       style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all<Color>(Colors.orange),
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            AppColors.whiteSmoke),
                       ),
                       child: const Text("Send"),
                     ),

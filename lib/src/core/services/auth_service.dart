@@ -33,7 +33,7 @@ class AuthService {
 
   User? get getCurrentUser => _auth.currentUser;
 
-  Future signInUsingEmailPassword({
+  Future<ResponseStatusModel> signInUsingEmailPassword({
     required String email,
     required String password,
   }) async {
@@ -74,26 +74,12 @@ class AuthService {
     return response;
   }
 
-  // Future<(ResponseStatusModel, bool)> verifyEmailAndRegister(
-  //     String email) async {
-  //   final (ResponseStatusModel, bool) response =
-  //       await _authRepository.(email);
-
-  //   return response;
-  // }
-
   static Future<void> logout() async {
-    try {
-      await FirebaseAuth.instance
-          .signOut()
-          .onError((error, stackTrace) => null);
-      await GoogleSignIn().isSignedIn().then((value) async {
-        await GoogleSignIn().signOut().onError((error, stackTrace) => null);
-        await GoogleSignIn().disconnect().onError((error, stackTrace) => null);
-      });
-    } catch (error) {
-      // WeException.handle(error);
-    }
+    await FirebaseAuth.instance.signOut().onError((error, stackTrace) => null);
+    await GoogleSignIn().isSignedIn().then((value) async {
+      await GoogleSignIn().signOut().onError((error, stackTrace) => null);
+      await GoogleSignIn().disconnect().onError((error, stackTrace) => null);
+    });
   }
 
   void _init() {

@@ -1,5 +1,5 @@
 import "package:flutter_modular/flutter_modular.dart";
-
+import "package:task_manager/src/app_module.dart";
 import "package:task_manager/src/app_wrap_page.dart";
 import "package:task_manager/src/core/services/auth_service.dart";
 import "package:task_manager/src/core/services/user_service.dart";
@@ -9,6 +9,7 @@ import "package:task_manager/src/modules/auth/auth_module.dart";
 class MainModule extends Module {
   final String _status = "/status";
   final String _auth = "/auth";
+  final String _initial = "/app";
 
   @override
   void binds(i) {
@@ -25,6 +26,7 @@ class MainModule extends Module {
       children: [
         ModuleRoute(_status, module: AppStatusModule()),
         ModuleRoute(_auth, module: AuthModule()),
+        ModuleRoute(_initial, module: AppModule()),
       ],
     );
   }

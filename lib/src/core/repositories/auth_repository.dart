@@ -10,38 +10,53 @@ class AuthRepository {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   Future<ResponseStatusModel> register(UserModel user, String password) async {
+    late final ResponseStatusModel response = ResponseStatusModel();
+
     try {
       await _auth.createUserWithEmailAndPassword(
         email: user.email!,
         password: password,
       );
-      return ResponseStatusModel(status: ResponseStatusEnum.success);
-    } catch (error) {
-      _displayResponseAlert(ResponseStatusModel(error: error));
-      return ResponseStatusModel(
-        message: "Failed to register",
-        status: ResponseStatusEnum.failed,
-      );
+
+      return response;
+    } on FirebaseAuthException catch (e) {
+      response.message = "Erro ao fazer login: $e";
+      response.status = ResponseStatusEnum.failed;
     }
+
+    _displayResponseAlert(response);
+    return response;
   }
 
-  Future signInUsingEmailPassword({
+  Future<ResponseStatusModel> signInUsingEmailPassword({
     required String email,
     required String password,
   }) async {
     late final ResponseStatusModel response = ResponseStatusModel();
+
     try {
-      await _auth.signInWithEmailAndPassword(email: email, password: password);
+      await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
 
-      return null;
+      if (!_auth.currentUser!.emailVerified) {
+        response.status = ResponseStatusEnum.failed;
+        response.message =
+            "O email ainda não foi verificado. Por favor, verifique seu email.";
+        _displayResponseAlert(response);
+
+        return response;
+      }
+
+      response.status = ResponseStatusEnum.success;
+      return response;
     } on FirebaseAuthException catch (e) {
-      response.message = e.message!;
-
-      return e.message;
-    } catch (e) {
-      _displayResponseAlert(ResponseStatusModel(
-          message: response.message, status: ResponseStatusEnum.failed));
+      response.message = "Erro ao fazer login: $e";
+      response.status = ResponseStatusEnum.failed;
     }
+    _displayResponseAlert(response);
+    return response;
   }
 
   Future<ResponseStatusModel> sendEmailValidation() async {
@@ -60,16 +75,24 @@ class AuthRepository {
   Future<ResponseStatusModel> sendPasswordResetEmail({
     required String email,
   }) async {
-    try {
-      await _auth.sendPasswordResetEmail(email: email);
-      return ResponseStatusModel(status: ResponseStatusEnum.success);
-    } catch (error) {
-      _displayResponseAlert(ResponseStatusModel(error: error));
-      return ResponseStatusModel(
-        message: "Failed to send password reset email",
-        status: ResponseStatusEnum.failed,
-      );
-    }
+    late final ResponseStatusModel response = ResponseStatusModel();
+
+    await _auth
+        .sendPasswordResetEmail(email: email)
+        .then((snapshot) => null)
+        .onError((error, stackTrace) {
+      if (error is FirebaseAuthException) {
+        if (error.code != "user-not-found") {
+          response.status = ResponseStatusEnum.failed;
+          response.error = error;
+        }
+      } else {
+        response.status = ResponseStatusEnum.failed;
+        response.error = error;
+      }
+    });
+
+    return response;
   }
 
   Future<ResponseStatusModel> loginWithGoogle() async {
@@ -85,7 +108,7 @@ class AuthRepository {
         .then((value) {
       googleUser = value;
     }).onError((error, stackTrace) {
-      // response = WeException.handle(error);
+      response.error = error;
     });
 
     if (response.status == ResponseStatusEnum.failed) {
@@ -93,8 +116,9 @@ class AuthRepository {
     }
 
     if (googleUser == null) {
-      // response.code = AppResponseCodesEnum.loginFailed;
       response.status = ResponseStatusEnum.failed;
+      _displayResponseAlert(ResponseStatusModel(
+          status: response.status, message: "Não foi possivel fazer Login"));
       return response;
     }
 
@@ -110,9 +134,7 @@ class AuthRepository {
         .signInWithCredential(credential)
         .then((value) => null)
         .timeout(const Duration(seconds: 10))
-        .onError((error, stackTrace) {
-      // response = WeException.handle(error);
-    });
+        .onError((error, stackTrace) {});
 
     return response;
   }

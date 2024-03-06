@@ -13,6 +13,7 @@ import "package:task_manager/src/domain/models/response_status_model.dart";
 import "package:task_manager/src/domain/models/user_model.dart";
 import "package:task_manager/src/modules/auth/auth_module.dart";
 import "package:task_manager/src/modules/auth/bloc/auth_state.dart";
+import "package:task_manager/src/modules/task/task_module.dart";
 
 class AuthCubit extends Cubit<AuthState> {
   AuthCubit() : super(const AuthState()) {
@@ -25,8 +26,6 @@ class AuthCubit extends Cubit<AuthState> {
 
   final AuthService _authService = Modular.get<AuthService>();
   final UserService _userService = Modular.get<UserService>();
-
-  late UserServiceStatusEnum _userStatus = UserServiceStatusEnum.loggedOut;
 
   late String _password = "";
   late UserModel _user = UserModel();
@@ -63,14 +62,11 @@ class AuthCubit extends Cubit<AuthState> {
     _update();
 
     if (_isRegister) {
-      _userStatus = _userService.status;
-
       late ResponseStatusModel response;
 
       response = await _authService.register(_user, _password);
 
       if (response.status == ResponseStatusEnum.failed) {
-        _displayResponseAlert(response);
         return;
       }
 
@@ -81,7 +77,6 @@ class AuthCubit extends Cubit<AuthState> {
       final ResponseStatusModel response = await _userService.update(_user);
 
       if (response.status == ResponseStatusEnum.failed) {
-        _displayResponseAlert(response);
         return;
       }
 
@@ -94,7 +89,9 @@ class AuthCubit extends Cubit<AuthState> {
     required String password,
   }) async {
     _setLoading();
-    late ResponseStatusModel response;
+
+    late ResponseStatusModel response = ResponseStatusModel();
+
     if (!_isEnabled) {
       _handleWaitSnackBar();
       return;
@@ -106,18 +103,12 @@ class AuthCubit extends Cubit<AuthState> {
       password: password,
     );
 
-    if (_userStatus == UserServiceStatusEnum.emailNotVerified) {
-      _displayResponseAlert(ResponseStatusModel(
-          message: "Verifique sua Caixa de Entrada",
-          status: ResponseStatusEnum.warning));
+    if (response.status == ResponseStatusEnum.success &&
+        _authService.getCurrentUser!.emailVerified) {
+      Modular.to.navigate(routeTaskHome);
     }
 
-    if (response.status == ResponseStatusEnum.failed) {
-      _displayResponseAlert(ResponseStatusModel(
-          message: "Não foi possivel Logar!", status: response.status));
-    } else {
-      _isEnabled = true;
-    }
+    _isEnabled = true;
   }
 
   Future<void> forgotPassword(
@@ -128,6 +119,8 @@ class AuthCubit extends Cubit<AuthState> {
       final ResponseStatusModel response =
           await _authService.sendPasswordResetEmail(email: email);
       if (response.status == ResponseStatusEnum.success) {
+        _displayResponseAlert(ResponseStatusModel(
+            status: response.status, message: "Email Enviado Com Sucesso"));
         emit(state.copyWith(status: AuthStatus.success));
       }
     }
@@ -135,8 +128,6 @@ class AuthCubit extends Cubit<AuthState> {
 
   void _handleUserStatusListener() {
     _userService.userStream.listen((status) {
-      _userStatus = status;
-
       switch (status) {
         case UserServiceStatusEnum.emailNotVerified:
           emit(state.copyWith(status: AuthStatus.emailNotVerified));
@@ -152,7 +143,7 @@ class AuthCubit extends Cubit<AuthState> {
 
   void redirectLogin() {
     if (_user.loginType == UserLoginProviderEnum.google) {
-      // Modular.to.navigate(routeTaskHome);
+      Modular.to.navigate(routeTaskHome);
     } else if (Modular.to.path != routeAuthLogin) {
       Modular.to.navigate(routeAuthLogin);
     }

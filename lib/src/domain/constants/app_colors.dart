@@ -11,6 +11,7 @@ abstract class AppColors {
   static const Color blueInfo = Color(0xFF50A6DA);
   static const Color orangeWarning = Color(0xFFFFB355);
   static const Color eclipse = Color(0XFF3B3B3B);
+  static const Color grey = Color(0XFFA5A5A5);
 
   static BoxDecoration backgroundLogoGradient() {
     return const BoxDecoration(
