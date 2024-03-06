@@ -1,5 +1,9 @@
 import "package:flutter/material.dart";
+import "package:flutter_bloc/flutter_bloc.dart";
 import "package:flutter_modular/flutter_modular.dart";
+import "package:task_manager/src/app_wrap_cubit.dart";
+import "package:task_manager/src/shared/custom_app_alert_modal.dart";
+import "package:task_manager/src/shared/custom_app_snackbar_modal.dart";
 
 class AppWrapView extends StatefulWidget {
   const AppWrapView({super.key});
@@ -26,20 +30,18 @@ class _AppWrapViewState extends State<AppWrapView> {
   }
 
   Widget _handleAlerts() {
-    // TODO(gabriel): implement after
+    final AppWrapCubit appCubit = AppWrapCubit.instance;
 
-    // final AppWrapCubit appCubit = AppWrapCubit.instance;
-
-    return const Column(
+    return Column(
       children: [
-        // BlocProvider.value(
-        //   value: appCubit,
-        //   child: const CustomAppSnackBarModal(),
-        // ),
-        // BlocProvider.value(
-        //   value: appCubit,
-        //   child: const CustomAppAlertModal(),
-        // ),
+        BlocProvider.value(
+          value: appCubit,
+          child: const CustomAppAlertModal(),
+        ),
+        BlocProvider.value(
+          value: appCubit,
+          child: const CustomAppSnackBarModal(),
+        ),
       ],
     );
   }
