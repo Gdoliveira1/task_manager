@@ -1,17 +1,30 @@
+import "package:cloud_firestore/cloud_firestore.dart";
 import "package:flutter/material.dart";
 import "package:flutter_modular/flutter_modular.dart";
 import "package:task_manager/main_module.dart";
 import "package:task_manager/src/app_wrap_cubit.dart";
+import "package:task_manager/src/core/helpers/firebase_helper.dart";
+import "package:task_manager/src/core/services/auth_service.dart";
+import "package:task_manager/src/core/services/user_service.dart";
 import "package:task_manager/src/modules/app_status/app_status_module.dart";
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await startMainServices();
   startLazySingletons();
-
   runApp(ModularApp(module: MainModule(), child: const MainApp()));
 }
 
+Future startMainServices() async {
+  await FirebaseHelper.initializeFirebase();
+
+  FirebaseFirestore.instance.settings =
+      const Settings(cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED);
+}
+
 void startLazySingletons() {
+  AuthService.init();
+  UserService.init();
   AppWrapCubit.init();
 }
 

@@ -14,4 +14,10 @@ abstract class AppTextStyles {
     color: AppColors.whisper,
     letterSpacing: -0.04,
   );
+  static const TextStyle white16w400sfprodisplay = TextStyle(
+    fontSize: 16.0,
+    fontWeight: FontWeight.w400,
+    color: AppColors.white,
+    letterSpacing: -0.02,
+  );
 }
