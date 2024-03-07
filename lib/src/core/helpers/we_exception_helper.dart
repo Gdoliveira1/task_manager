@@ -1,8 +1,6 @@
-import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:task_manager/src/domain/constants/app_colors.dart";
 import "package:task_manager/src/domain/enums/response_status_enum.dart";
-import "package:task_manager/src/domain/models/response_status_model.dart";
 
 abstract class WeExceptionHelper {
   static Color getStatusColorFromStatus(ResponseStatusEnum status) {
@@ -34,13 +32,13 @@ abstract class WeExceptionHelper {
   static String getAlertIconNameFromStatus(ResponseStatusEnum status) {
     switch (status) {
       case ResponseStatusEnum.success:
-        return "successSnackbar";
+        return "assets/icons/successSnackbar.png";
       case ResponseStatusEnum.failed:
-        return "circleAlertSnackbar";
+        return "assets/icons/circleAlertSnackbar.png";
       case ResponseStatusEnum.warning:
-        return "triangleAlertSnackbar";
+        return "assets/icons/triangleAlertSnackbar.png";
       case ResponseStatusEnum.info:
-        return "infoSnackbar";
+        return "assets/icons/infoSnackbar.png";
     }
   }
 }

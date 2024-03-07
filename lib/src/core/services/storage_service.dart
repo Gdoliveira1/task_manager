@@ -1,29 +1,39 @@
-// import 'dart:io';
+import "dart:io";
 
+import "package:firebase_storage/firebase_storage.dart";
 
-// import 'package:cloud_firestore/cloud_firestore.dart';
+class StorageService {
+  static Future<String> uploadImageToFirebaseStorage(String imagePath) async {
+    try {
+      final File file = File(imagePath);
 
-// class StorageService {
-//   Future<String> uploadImage(File imageFile) async {
-//     // Crie uma referência única para a imagem no Firebase Storage
-//     Reference storageRef =
-//         FirebaseStorage.instance.ref().child('images').child(imageFile.path);
+      if (!file.existsSync()) {
+        throw Exception("File does not exist");
+      }
 
-//     // Faça o upload da imagem para o Firebase Storage
-//     UploadTask uploadTask = storageRef.putFile(imageFile);
-//     TaskSnapshot snapshot = await uploadTask.whenComplete(() => null);
+      final Reference ref =
+          FirebaseStorage.instance.ref().child("images").child(file.path);
 
-//     // Recupere a URL da imagem após o upload ser concluído
-//     String imageUrl = await snapshot.ref.getDownloadURL();
+      final UploadTask uploadTask = ref.putFile(file);
 
-//     return imageUrl;
-//   }
+      final TaskSnapshot storageTaskSnapshot =
+          await uploadTask.whenComplete(() => null);
+      final String downloadURL = await storageTaskSnapshot.ref.getDownloadURL();
 
-//   void saveImageUrlToFirestore(String imageUrl) {
-//     // Salve a URL da imagem no Firestore
-//     FirebaseFirestore.instance.collection('images').add({
-//       'imageUrl': imageUrl,
-//       // Outros campos que você queira armazenar junto com a URL da imagem
-//     });
-//   }
-// }
+      return downloadURL;
+    } catch (e) {
+      return "";
+    }
+  }
+
+  static Future<void> deleteImageFromFirebaseStorage(String imageUrl) async {
+    try {
+      final Reference storageRef =
+          FirebaseStorage.instance.refFromURL(imageUrl);
+
+      await storageRef.delete();
+    } catch (e) {
+      return;
+    }
+  }
+}

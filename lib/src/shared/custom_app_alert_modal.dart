@@ -4,6 +4,7 @@ import "package:task_manager/src/app_wrap_cubit.dart";
 import "package:task_manager/src/app_wrap_state.dart";
 import "package:task_manager/src/core/helpers/we_exception_helper.dart";
 import "package:task_manager/src/domain/constants/app_text_styles.dart";
+import "package:task_manager/src/domain/enums/response_status_enum.dart";
 import "package:task_manager/src/domain/models/response_status_model.dart";
 
 class CustomAppAlertModal extends StatefulWidget {
@@ -107,7 +108,7 @@ class _CustomAppAlertModalState extends State<CustomAppAlertModal> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // _buildIcon(response.status),
+                _buildIcon(response.status),
                 const SizedBox(width: 20),
                 Expanded(
                   child: Text(
@@ -134,12 +135,13 @@ class _CustomAppAlertModalState extends State<CustomAppAlertModal> {
     );
   }
 
-  // Widget _buildIcon(ResponseStatusEnum status) {
-  //   return Image.build(
-  //     iconName: WeExceptionHelper.getAlertIconNameFromStatus(status),
-  //     forceSize: 20,
-  //   );
-  // }
+  Widget _buildIcon(ResponseStatusEnum status) {
+    return Image.asset(
+      height: 20,
+      width: 20,
+      WeExceptionHelper.getAlertIconNameFromStatus(status),
+    );
+  }
 
   void notificationExpired(ResponseStatusModel response, int duration) {
     Future.delayed(Duration(seconds: duration), () {

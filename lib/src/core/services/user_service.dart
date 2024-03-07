@@ -11,6 +11,7 @@ import "package:task_manager/src/domain/enums/user_service_status_enum.dart";
 import "package:task_manager/src/domain/models/response_status_model.dart";
 import "package:task_manager/src/domain/models/user_model.dart";
 import "package:task_manager/src/modules/auth/auth_module.dart";
+import "package:task_manager/src/modules/task/task_module.dart";
 
 class UserService {
   UserService._internal();
@@ -83,37 +84,6 @@ class UserService {
     return response;
   }
 
-  // Future<ResponseStatusModel> updateName(String name) async {
-  //   final ResponseStatusModel response =
-  //       await _userRepository.updateName(name: name);
-
-  //   if (response.status == ResponseStatusEnum.success) {
-  //     _user.name = name;
-  //   }
-
-  //   AppHelper.snackBar(response: response);
-  //   return response;
-  // }
-
-  // TODO(Gabriel): Implement after
-
-  // Future<ResponseStatusModel> updatePassword(
-  //   String currentPassword,
-  //   String newPassword,
-  // ) async {
-  //   final ResponseStatusModel response = await _userRepository.updatePassword(
-  //     newPassword: newPassword,
-  //     currentPassword: currentPassword,
-  //   );
-
-  //   if (response.code == WeExceptionCodesEnum.firebaseAuthWrongPassword) {
-  //     response.message = t.warnings.login.validateIncorrectPassword;
-  //   }
-
-  //   AppAlertsController.snackBar(response: response);
-  //   return response;
-  // }
-
   Future<void> handleCallBack() async {
     if (_status == UserServiceStatusEnum.accountedCreated) {
       return;
@@ -158,9 +128,7 @@ class UserService {
       _user.loginType =
           value ? UserLoginProviderEnum.google : UserLoginProviderEnum.email;
       _isGoogleRegister = value;
-    }).onError((error, stackTrace) {
-      // WeException.handle(error);
-    });
+    }).onError((error, stackTrace) {});
   }
 
   void _validateUser() {
@@ -173,14 +141,6 @@ class UserService {
       _status = UserServiceStatusEnum.emailNotVerified;
       return;
     }
-
-    // if (ValidatorHelper.string(_user.name) != null) {
-    //   _status = UserServiceStatusEnum.missingFields;
-    // }
-
-    // if (ValidatorHelper.email(_user.email) != null) {
-    //   _status = UserServiceStatusEnum.missingFields;
-    // }
   }
 
   Future<void> _handleRedirectStatus() async {
@@ -190,7 +150,7 @@ class UserService {
       case UserServiceStatusEnum.valid:
         _userRepository.updateListener();
         if (Modular.to.path != routeAuthRegister) {
-          // Modular.to.navigate(routeTaskHome);
+          Modular.to.navigate(routeTaskHome);
         }
         return;
       case UserServiceStatusEnum.emailNotVerified:

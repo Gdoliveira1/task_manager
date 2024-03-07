@@ -8,7 +8,6 @@
 .buildlog/
 .history
 .svn/
-migrate_working_dir/
 
 # IntelliJ related
 *.iml
@@ -20,6 +19,7 @@ migrate_working_dir/
 # VS Code which you may wish to be included in version control, so this line
 # is commented out by default.
 #.vscode/
+.launch.json
 
 # Flutter/Dart/Pub related
 **/doc/api/
@@ -27,9 +27,17 @@ migrate_working_dir/
 .dart_tool/
 .flutter-plugins
 .flutter-plugins-dependencies
+.packages
+pubspec.lock
 .pub-cache/
 .pub/
 /build/
+.pubspec.lock
+*.g.dart
+.env
+
+# Web related
+lib/generated_plugin_registrant.dart
 
 # Symbolication related
 app.*.symbols
@@ -41,3 +49,6 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+/android/key.properties
+**ios/googleService-Info.plist
+**ios/android/app/google-services.json

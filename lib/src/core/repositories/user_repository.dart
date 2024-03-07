@@ -20,7 +20,7 @@ class UserRepository {
   Stream<UserModel> get userStream => _userController.stream;
 
   Future<ResponseStatusModel> create(UserModel user) async {
-    late ResponseStatusModel response = ResponseStatusModel();
+    late final ResponseStatusModel response = ResponseStatusModel();
 
     await _instance
         .collection("users")
@@ -28,14 +28,14 @@ class UserRepository {
         .set(user.toJson(), SetOptions(merge: true))
         .then((value) => null)
         .onError((error, stackTrace) {
-      // response = WeException.handle(error);
+      response.error = error;
     });
 
     return response;
   }
 
   Future<(ResponseStatusModel, UserModel)> get() async {
-    late ResponseStatusModel response = ResponseStatusModel();
+    late final ResponseStatusModel response = ResponseStatusModel();
     late UserModel user = UserModel();
 
     await _instance
@@ -47,17 +47,16 @@ class UserRepository {
         user = UserModel.fromJson(snapshot.data()!);
       } else {
         response.status = ResponseStatusEnum.failed;
-        // response.code = WeExceptionCodesEnum.firebaseAuthUserNotFound;
       }
     }).onError((error, stackTrace) {
-      // response = WeException.handle(error);
+      response.error = error;
     });
 
     return (response, user);
   }
 
   Future<ResponseStatusModel> update(UserModel user) async {
-    late ResponseStatusModel response = ResponseStatusModel();
+    late final ResponseStatusModel response = ResponseStatusModel();
 
     await _instance
         .collection("users")
@@ -67,61 +66,10 @@ class UserRepository {
         .then((value) {
       response.message = "Conta foi atualizada com sucesso";
     }).onError((error, stackTrace) {
-      // response = WeException.handle(error);
+      response.error = error;
     });
     return response;
   }
-
-  // Future<ResponseStatusModel> updateName({required String name}) async {
-  //   late ResponseStatusModel response = ResponseStatusModel();
-
-  //   await _auth.currentUser!
-  //       .updateDisplayName(name)
-  //       .onError((error, stackTrace) {
-  //     response = WeException.handle(error);
-  //   });
-
-  //   if (response.status == ResponseStatusEnum.failed) {
-  //     return response;
-  //   }
-
-  //   await _instance
-  //       .collection("users")
-  //       .doc(_auth.currentUser!.uid)
-  //       .update({"name": name}).onError((error, stackTrace) {
-  //     response = WeException.handle(error);
-  //   });
-
-  //   return response;
-  // }
-
-  // Future<ResponseStatusModel> updatePassword({
-  //   required String currentPassword,
-  //   required String newPassword,
-  // }) async {
-  //   final userCredential = EmailAuthProvider.credential(
-  //     email: _auth.currentUser!.email!,
-  //     password: currentPassword,
-  //   );
-
-  //   late ResponseStatusModel response = ResponseStatusModel();
-
-  //   try {
-  //     await _auth.currentUser!.reauthenticateWithCredential(userCredential);
-  //   } catch (error) {
-  //     response.message = "Wrong password";
-  //     return WeException.handle(error);
-  //   }
-
-  //   await _auth.currentUser!
-  //       .updatePassword(newPassword)
-  //       .then((snapshot) => null)
-  //       .onError((error, stackTrace) {
-  //     response = WeException.handle(error);
-  //   });
-
-  //   return response;
-  // }
 
   void updateListener() {
     if (_auth.currentUser != null) {
@@ -136,8 +84,6 @@ class UserRepository {
         if (error is FirebaseException &&
             error.code.contains("permission-denied")) {
           closeListener();
-        } else {
-          // WeException.handle(error);
         }
       });
     }
