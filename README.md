@@ -21,7 +21,7 @@ O Task Manager é um aplicativo de gerenciamento de tarefas simples e eficiente,
 1. Clone o repositório para o seu ambiente local:
 
     ```bash
-  git clone https://github.com/Gdoliveira1/task_manager.git
+    git clone https://github.com/Gdoliveira1/task_manager.git
     ```
 
 2. Acesse o diretório do projeto:
