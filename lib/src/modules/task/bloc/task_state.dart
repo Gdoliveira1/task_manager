@@ -5,13 +5,11 @@ enum TaskCubitStatus { initial, loading }
 
 class TaskState extends Equatable {
   final TaskCubitStatus status;
-  // final UserModel? user;
   final List<TaskModel>? tasks;
   final bool isRefresh;
 
   const TaskState({
     this.status = TaskCubitStatus.loading,
-    // this.user,
     this.tasks = const [],
     this.isRefresh = false,
   });
@@ -19,12 +17,9 @@ class TaskState extends Equatable {
   TaskState copyWith({
     TaskCubitStatus? status,
     List<TaskModel>? tasks,
-
-    // UserModel? user,
   }) {
     return TaskState(
       status: status ?? this.status,
-      // user: user ?? this.user,
       tasks: tasks ?? this.tasks ?? [],
       isRefresh: !isRefresh,
     );
@@ -34,7 +29,6 @@ class TaskState extends Equatable {
   List<Object?> get props => [
         status,
         tasks,
-        // user,
         isRefresh,
       ];
 }
