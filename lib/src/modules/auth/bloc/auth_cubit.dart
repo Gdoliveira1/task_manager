@@ -15,6 +15,11 @@ import "package:task_manager/src/modules/auth/auth_module.dart";
 import "package:task_manager/src/modules/auth/bloc/auth_state.dart";
 import "package:task_manager/src/modules/task/task_module.dart";
 
+/// A Cubit responsible for managing authentication-related states and actions.
+///
+/// The [AuthCubit] class handles user authentication processes such as login,
+/// registration, password recovery, and Google sign-in. It interacts with [AuthService]
+/// for authentication operations and [UserService] for user-related operations.
 class AuthCubit extends Cubit<AuthState> {
   AuthCubit() : super(const AuthState()) {
     _handleUserStatusListener();
@@ -33,6 +38,10 @@ class AuthCubit extends Cubit<AuthState> {
   late bool _isRegister = false;
   late bool _isEnabled = true;
 
+  /// Initiates the Google sign-in process.
+  ///
+  /// This method triggers the Google sign-in process using [AuthService],
+  /// updating the state accordingly based on the result.
   Future<void> loginWithGoogle() async {
     _isRegister = true;
     _setLoading();
@@ -45,6 +54,11 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
+  /// Handles the update or registration process.
+  ///
+  /// This method updates user information or registers a new user,
+  /// depending on the registration status. It interacts with [UserService]
+  /// and [AuthService] to perform the necessary operations.
   Future<void> updateOrRegister({
     required String email,
     required String password,
@@ -84,6 +98,10 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
+  /// Handles the login process.
+  ///
+  /// This method triggers the email/password-based login process using [AuthService],
+  /// updating the state accordingly based on the result.
   Future<void> login({
     required String email,
     required String password,
@@ -111,9 +129,11 @@ class AuthCubit extends Cubit<AuthState> {
     _isEnabled = true;
   }
 
-  Future<void> forgotPassword(
-    String email,
-  ) async {
+  /// Initiates the password recovery process.
+  ///
+  /// This method triggers the password recovery process using [AuthService],
+  /// updating the state accordingly based on the result.
+  Future<void> forgotPassword(String email) async {
     if (recoverFormKey.currentState!.validate()) {
       _setLoading();
       final ResponseStatusModel response =

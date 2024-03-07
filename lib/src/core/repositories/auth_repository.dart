@@ -6,9 +6,15 @@ import "package:task_manager/src/domain/enums/response_status_enum.dart";
 import "package:task_manager/src/domain/models/response_status_model.dart";
 import "package:task_manager/src/domain/models/user_model.dart";
 
+/// The repository responsible for managing authentication-related operations.
+/// This includes user registration, sign-in, password reset, and Google sign-in functionality.
+/// It interacts with the [ResponseStatusModel] to provide feedback to the user
+/// and utilizes the [NotificationController] for displaying notifications.
 class AuthRepository {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
+  /// Registers a new user with the provided user model and password.
+  /// Returns a [ResponseStatusModel] indicating the success or failure of the registration process.
   Future<ResponseStatusModel> register(UserModel user, String password) async {
     late final ResponseStatusModel response = ResponseStatusModel();
 
@@ -28,6 +34,8 @@ class AuthRepository {
     return response;
   }
 
+  /// Signs in a user using email and password authentication.
+  /// Returns a [ResponseStatusModel] indicating the success or failure of the operation.
   Future<ResponseStatusModel> signInUsingEmailPassword({
     required String email,
     required String password,
@@ -59,6 +67,8 @@ class AuthRepository {
     return response;
   }
 
+  /// Sends an email verification to the current user.
+  /// Returns a [ResponseStatusModel] indicating the success or failure of the operation.
   Future<ResponseStatusModel> sendEmailValidation() async {
     try {
       await _auth.currentUser!.sendEmailVerification();
@@ -72,6 +82,8 @@ class AuthRepository {
     }
   }
 
+  /// Sends a password reset email to the provided email address.
+  /// Returns a [ResponseStatusModel] indicating the success or failure of the operation.
   Future<ResponseStatusModel> sendPasswordResetEmail({
     required String email,
   }) async {
@@ -95,6 +107,8 @@ class AuthRepository {
     return response;
   }
 
+  /// Signs in a user using Google authentication.
+  /// Returns a [ResponseStatusModel] indicating the success or failure of the operation.
   Future<ResponseStatusModel> loginWithGoogle() async {
     late final ResponseStatusModel response = ResponseStatusModel();
 
@@ -139,6 +153,7 @@ class AuthRepository {
     return response;
   }
 
+  /// Displays a notification alert based on the provided response status model.
   void _displayResponseAlert(ResponseStatusModel response) async {
     NotificationController.snackBar(response: response);
   }

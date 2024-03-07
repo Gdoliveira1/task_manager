@@ -13,6 +13,15 @@ import "package:task_manager/src/domain/models/user_model.dart";
 import "package:task_manager/src/modules/auth/auth_module.dart";
 import "package:task_manager/src/modules/task/task_module.dart";
 
+/// A service responsible for managing user-related operations, such as user authentication, account creation,
+/// profile updates, and handling user logout.
+///
+/// The [UserService] interacts with Firebase Authentication for authentication and user management, as well as
+/// with [UserRepository] for database operations related to user data.
+///
+/// It provides functionality to create user accounts, retrieve user information, update user profiles,
+/// handle user authentication callbacks, and manage user logout actions. Additionally, it handles email verification
+/// for newly created accounts and redirects users based on their verification status and login method.
 class UserService {
   UserService._internal();
 
@@ -22,6 +31,8 @@ class UserService {
 
   static bool _hasInit = false;
 
+  /// Initializes the [UserService] instance.
+  /// This method should be called once to ensure proper initialization of the service.
   static void init() async {
     if (!_hasInit) {
       _hasInit = true;
@@ -46,6 +57,9 @@ class UserService {
 
   UserServiceStatusEnum get status => _status;
 
+  /// Creates a new user account with the provided user data.
+  /// This method sets the user status to [UserServiceStatusEnum.accountedCreated], updates the user's ID,
+  /// and triggers the creation of the user account using [UserRepository].
   Future<ResponseStatusModel> create(UserModel user) async {
     _status = UserServiceStatusEnum.accountedCreated;
     user.id = FirebaseAuth.instance.currentUser!.uid;
@@ -58,6 +72,9 @@ class UserService {
     return response;
   }
 
+  /// Retrieves user information from the database.
+  /// This method fetches user data from the database using [UserRepository] and updates the local user instance
+  /// if the retrieval is successful.
   Future<ResponseStatusModel> get() async {
     final (ResponseStatusModel, UserModel) data = await _userRepository.get();
 
@@ -68,6 +85,9 @@ class UserService {
     return data.$1;
   }
 
+  /// Updates the user's profile with the provided data.
+  /// This method updates the user's profile using [UserRepository] and sets the user status accordingly.
+  /// It also handles Google registration and newly created accounts.
   Future<ResponseStatusModel> update(UserModel user) async {
     final ResponseStatusModel response = await _userRepository.update(user);
 
@@ -84,6 +104,9 @@ class UserService {
     return response;
   }
 
+  /// Handles callbacks from user authentication operations.
+  /// This method is called to handle user authentication callbacks, such as after user registration or login.
+  /// It retrieves user data, checks if the user is logged in using Google, and validates the user's email status.
   Future<void> handleCallBack() async {
     if (_status == UserServiceStatusEnum.accountedCreated) {
       return;
@@ -106,6 +129,9 @@ class UserService {
     await _handleValidate();
   }
 
+  /// Logs out the current user.
+  /// This method clears the current user data, sets the user status to [UserServiceStatusEnum.loggedOut],
+  /// and performs additional cleanup tasks.
   void handleUserLogout() {
     _user = UserModel();
 
@@ -118,11 +144,13 @@ class UserService {
     _isUserInDatabase = false;
   }
 
+  /// Validates user information and handles redirection based on user status.
   Future<void> _handleValidate() async {
     _validateUser();
     await _handleRedirectStatus();
   }
 
+  /// Checks if the user has logged in using Google.
   Future<void> _checkIfIsGoogleLogin() async {
     await GoogleSignIn().isSignedIn().then((value) {
       _user.loginType =
@@ -131,6 +159,7 @@ class UserService {
     }).onError((error, stackTrace) {});
   }
 
+  /// Validates the user's email verification status.
   void _validateUser() {
     if (_status == UserServiceStatusEnum.accountedCreated) {
       return;
@@ -143,6 +172,7 @@ class UserService {
     }
   }
 
+  /// Handles redirection based on user status.
   Future<void> _handleRedirectStatus() async {
     _updateUserStatus();
 
@@ -169,6 +199,7 @@ class UserService {
     }
   }
 
+  /// Sends email verification to the user.
   Future<void> _handleSendEmail() async {
     if (!_hasSentValidationEmail && !_isGoogleRegister) {
       _hasSentValidationEmail = true;
@@ -180,6 +211,7 @@ class UserService {
     }
   }
 
+  /// Handles recent user registration actions.
   void _handleRecentUserRegister() {
     _updateUserStatus();
     if (!_isGoogleRegister) {
@@ -192,10 +224,12 @@ class UserService {
     }
   }
 
+  /// Updates the user status in the stream.
   void _updateUserStatus() {
     _statusController.sink.add(_status);
   }
 
+  /// Sets the current user model.
   void _setUser(UserModel user) {
     _user = user;
   }

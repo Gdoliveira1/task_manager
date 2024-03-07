@@ -6,6 +6,11 @@ import "package:task_manager/src/core/services/user_service.dart";
 import "package:task_manager/src/modules/app_status/app_status_module.dart";
 import "package:task_manager/src/modules/auth/auth_module.dart";
 
+/// A module responsible for defining the main navigation routes and providing singleton instances of core services.
+///
+/// This module utilizes the Modular package for managing application navigation and dependency injection.
+/// Modular provides a convenient way to organize and navigate between modules while also facilitating the
+/// injection of dependencies such as [AuthService] and [UserService].
 class MainModule extends Module {
   final String _status = "/status";
   final String _auth = "/auth";

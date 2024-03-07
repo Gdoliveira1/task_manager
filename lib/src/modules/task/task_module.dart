@@ -15,7 +15,6 @@ class TaskModule extends Module {
 
   @override
   void routes(r) {
-    // ChildRoute(_home, child: (__) => const HomeTaskPage());
     r.child(_home, child: (__) => const HomeTaskPage());
   }
 }

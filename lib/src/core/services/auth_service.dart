@@ -11,6 +11,8 @@ import "package:task_manager/src/domain/models/response_status_model.dart";
 import "package:task_manager/src/domain/models/user_model.dart";
 import "package:task_manager/src/modules/auth/auth_module.dart";
 
+/// AuthService handles authentication operations like sign in, sign out,
+/// and user registration using different providers like email-password and Google.
 class AuthService {
   AuthService._internal();
 
@@ -20,6 +22,7 @@ class AuthService {
 
   static bool _hasInit = false;
 
+  /// Initializes the AuthService singleton instance.
   static void init() async {
     if (!_hasInit) {
       _hasInit = true;
@@ -31,8 +34,10 @@ class AuthService {
   final AuthRepository _authRepository = AuthRepository();
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
+  /// Retrieves the current authenticated user.
   User? get getCurrentUser => _auth.currentUser;
 
+  /// Signs in using email and password.
   Future<ResponseStatusModel> signInUsingEmailPassword({
     required String email,
     required String password,
@@ -43,12 +48,14 @@ class AuthService {
     );
   }
 
+  /// Sends a password reset email to the specified email address.
   Future<ResponseStatusModel> sendPasswordResetEmail({
     required String email,
   }) async {
     return await _authRepository.sendPasswordResetEmail(email: email);
   }
 
+  /// Sends email verification to the current user.
   Future<ResponseStatusModel> sendEmailValidation() async {
     final ResponseStatusModel response =
         await _authRepository.sendEmailValidation();
@@ -56,6 +63,7 @@ class AuthService {
     return response;
   }
 
+  /// Signs in using Google authentication.
   Future<ResponseStatusModel> loginWithGoogle() async {
     final ResponseStatusModel response =
         await _authRepository.loginWithGoogle();
@@ -63,6 +71,7 @@ class AuthService {
     return response;
   }
 
+  /// Registers a new user with email and password.
   Future<ResponseStatusModel> register(UserModel user, String password) async {
     final ResponseStatusModel response =
         await _authRepository.register(user, password);
@@ -74,6 +83,7 @@ class AuthService {
     return response;
   }
 
+  /// Signs out the current user from Firebase and Google.
   static Future<void> logout() async {
     await FirebaseAuth.instance.signOut().onError((error, stackTrace) => null);
     await GoogleSignIn().isSignedIn().then((value) async {
@@ -82,10 +92,12 @@ class AuthService {
     });
   }
 
+  /// Initializes the AuthService by setting up authentication state change listener.
   void _init() {
     _authStatusListener();
   }
 
+  /// Listens for authentication state changes and performs necessary actions.
   void _authStatusListener() {
     FirebaseAuth.instance.authStateChanges().listen((user) {
       if (user == null) {
@@ -97,6 +109,7 @@ class AuthService {
     });
   }
 
+  /// Redirects to appropriate screen based on user authentication status.
   void _handleDisconnectedRedirect() {
     switch (_userService.status) {
       case UserServiceStatusEnum.emailNotVerified:

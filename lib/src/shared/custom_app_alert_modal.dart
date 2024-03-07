@@ -3,6 +3,7 @@ import "package:flutter_bloc/flutter_bloc.dart";
 import "package:task_manager/src/app_wrap_cubit.dart";
 import "package:task_manager/src/app_wrap_state.dart";
 import "package:task_manager/src/core/helpers/we_exception_helper.dart";
+import "package:task_manager/src/domain/constants/app_colors.dart";
 import "package:task_manager/src/domain/constants/app_text_styles.dart";
 import "package:task_manager/src/domain/enums/response_status_enum.dart";
 import "package:task_manager/src/domain/models/response_status_model.dart";
@@ -118,15 +119,12 @@ class _CustomAppAlertModalState extends State<CustomAppAlertModal> {
                     maxLines: 3,
                   ),
                 ),
-                // CustomHoverIconButton(
-                //   image: "closeGray",
-                //   iconColor: Colors.white,
-                //   onTap: () {
-                //     handleRemoveNotification(response);
-                //   },
-                //   forceSize: 20,
-                //   iconPadding: const EdgeInsets.all(4),
-                // ),
+                IconButton(
+                    color: AppColors.whisper,
+                    onPressed: () {
+                      handleRemoveNotification(response);
+                    },
+                    icon: const Icon(Icons.close))
               ],
             ),
           ),

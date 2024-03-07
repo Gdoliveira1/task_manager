@@ -10,7 +10,7 @@ import "package:task_manager/src/modules/task/bloc/task_state.dart";
 import "package:task_manager/src/modules/task/domain/enums/task_status_enum.dart";
 import "package:task_manager/src/modules/task/domain/models/task_model.dart";
 import "package:task_manager/src/shared/create_task_modal.dart";
-import "package:task_manager/src/shared/custom_message_info.dart"; // Importe o seu Cubit aqui
+import "package:task_manager/src/shared/custom_message_info.dart";
 
 class HomeTaskView extends StatefulWidget {
   const HomeTaskView({super.key});
@@ -81,7 +81,7 @@ class _HomeTaskViewState extends State<HomeTaskView> {
                               });
                             },
                           ),
-                          const Text("Exibir todas"),
+                          const Flexible(child: Text("Exibir todas")),
                         ],
                       ),
                     ),
@@ -185,6 +185,10 @@ class _HomeTaskViewState extends State<HomeTaskView> {
               const SizedBox(height: 10),
               Text(
                   "Data: ${task.data!.day}/${task.data!.month}/${task.data!.year}",
+                  style: task.imageUrl == ""
+                      ? AppTextStyles.black18w700
+                      : AppTextStyles.whisper18w700),
+              Text("Status: ${task.status.title}",
                   style: task.imageUrl == ""
                       ? AppTextStyles.black18w700
                       : AppTextStyles.whisper18w700),

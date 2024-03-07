@@ -3,12 +3,15 @@ import "package:task_manager/src/core/services/auth_service.dart";
 import "package:task_manager/src/domain/models/response_status_model.dart";
 import "package:task_manager/src/modules/task/domain/models/task_model.dart";
 
+/// The repository responsible for managing task-related operations.
+/// This includes fetching all tasks, creating or updating tasks, and deleting tasks.
 class TaskRepository {
   final AuthService _auth = AuthService.instance;
 
+  /// Retrieves all tasks associated with the current user.
+  /// Returns a tuple containing the response status and a list of tasks.
   Future<(ResponseStatusModel, List<TaskModel>)> getAll() async {
     late final ResponseStatusModel response = ResponseStatusModel();
-
     final List<TaskModel> tasks = [];
 
     try {
@@ -31,6 +34,8 @@ class TaskRepository {
     return (response, tasks);
   }
 
+  /// Creates or updates a task in the Firestore database.
+  /// Returns a [ResponseStatusModel] indicating the success or failure of the operation.
   Future<ResponseStatusModel> createOrUpdate(TaskModel task) async {
     late final ResponseStatusModel response = ResponseStatusModel();
 
@@ -45,6 +50,8 @@ class TaskRepository {
     return response;
   }
 
+  /// Deletes a task from the Firestore database based on its ID.
+  /// Returns a [ResponseStatusModel] indicating the success or failure of the operation.
   Future<ResponseStatusModel> delete(String id) async {
     late final ResponseStatusModel response = ResponseStatusModel();
 
